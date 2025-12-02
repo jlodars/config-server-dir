@@ -4,14 +4,12 @@ server:
 spring:
   data:
     mongodb:
-      #uri: mongodb+srv://bootcamp:eo4IaJNIbjk4f8ls@cluster0.hlzdcri.mongodb.net/active?retryWrites=true&w=majority
       uri: mongodb+srv://jlodarsantamaria_db_user:nT0dlTcHLqCVvV6p@clusterodar.topeczm.mongodb.net/active?appName=clusterodar
   cloud:
     config:
       server:
         git:
           default-label: master
-          #uri: https://github.com/banking-nttdata-bootcamp/active
           uri: https://github.com/jlodars/active
   application:
     name: active
