@@ -1,0 +1,55 @@
+server:
+  port: ${PORT:${SERVER_PORT:0}}
+
+spring:
+  data:
+    mongodb:
+      #uri: mongodb+srv://bootcamp:eo4IaJNIbjk4f8ls@cluster0.hlzdcri.mongodb.net/movement?retryWrites=true&w=majority
+      uri: mongodb+srv://jlodarsantamaria_db_user:nT0dlTcHLqCVvV6p@clusterodar.topeczm.mongodb.net/movement?appName=clusterodar
+  cloud:
+    config:
+      server:
+        git:
+          default-label: master
+          #uri: https://github.com/banking-nttdata-bootcamp/balance
+          uri: https://github.com/jlodars/balance
+  application:
+    name: balance
+
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    instance-id: ${spring.application.name}:${localhost:${random.value}}
+    service-url:
+      default-zone: http://localhost:8761/eureka
+    prefer-ip-address: true
+
+springdoc:
+  packagesToScan: com.nttdata.bootcamp
+
+management:
+  health:
+    circuitbrearks:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      balance:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowType: TIME_BASED
+        minimumNumberOfCalls: 4
+        waitDurationInOpenState: 2s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10

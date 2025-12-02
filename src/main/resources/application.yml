@@ -1,0 +1,15 @@
+server:
+  port: 7000
+
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+         git:
+          default-label: master
+          #uri: https://github.com/banking-nttdata-bootcamp/config-server-directory
+          uri: https://github.com/jlodars/config-server-dir
+          search-paths: config-data
+      

@@ -1,0 +1,153 @@
+server:
+  port: '8090'
+
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          default-label: master
+          #uri: https://github.com/banking-nttdata-bootcamp/gateway
+          uri: https://github.com/jlodars/gateway
+    discovery:
+      enabled: true
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: customer-service
+          uri: lb://customer
+          predicates:
+            - Path=/customer/**
+          filters:
+            - RewritePath=/customer/(?<path>.*), /$\{path}
+        - id: passive-service
+          uri: lb://passive
+          predicates:
+            - Path=/passive/**
+          filters:
+            - RewritePath=/passive/(?<path>.*), /$\{path}
+        - id: active-service
+          uri: lb://active
+          predicates:
+            - Path=/active/**
+          filters:
+            - RewritePath=/active/(?<path>.*), /$\{path}
+        - id: deposit-service
+          uri: lb://deposit
+          predicates:
+            - Path=/deposit/**
+          filters:
+            - RewritePath=/deposit/(?<path>.*), /$\{path}
+        - id: payment-service
+          uri: lb://payment
+          predicates:
+            - Path=/payment/**
+          filters:
+            - RewritePath=/payment/(?<path>.*), /$\{path}
+        - id: charge-consumption-service
+          uri: lb://charge-consumption
+          predicates:
+            - Path=/charge-consumption/**
+          filters:
+            - RewritePath=/charge-consumption/(?<path>.*), /$\{path}
+        - id: withdrawal-service
+          uri: lb://withdrawal
+          predicates:
+            - Path=/withdrawal/**
+          filters:
+            - RewritePath=/withdrawal/(?<path>.*), /$\{path}
+        - id: balance-service
+          uri: lb://balance
+          predicates:
+            - Path=/balance/**
+          filters:
+            - RewritePath=/balance/(?<path>.*), /$\{path}
+        - id: movement-service
+          uri: lb://movement
+          predicates:
+            - Path=/movement/**
+          filters:
+            - RewritePath=/movement/(?<path>.*), /$\{path}
+        - id: debit-card
+          uri: lb://debit-card
+          predicates:
+            - Path=/debit-card/**
+          filters:
+            - RewritePath=/debit-card/(?<path>.*), /$\{path}
+        - id: virtual-coin
+          uri: lb://virtual-coin
+          predicates:
+            - Path=/virtual-coin/**
+          filters:
+            - RewritePath=/virtual-coin(?<path>.*), /$\{path}
+        - id: bootcoin
+          uri: lb://bootcoin
+          predicates:
+            - Path=/bootcoin/**
+          filters:
+            - RewritePath=/bootcoin(?<path>.*), /$\{path}
+        - id: openapi
+          uri: http://localhost:${server.port}
+          predicates:
+            - Path=/v3/api-docs/**
+          filters:
+            - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
+        #routes[0]:
+        #id: bootcamp-customer
+        #predicates: Path=/customer/**
+        #filters: StripPrefix=1
+        #uri: lb://bootcamp-customer
+    loadbalancer:
+      ribbon:
+        enabled: false
+  application:
+    name: gateway
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    prefer-ip-address: true
+
+springdoc:
+  swagger-ui:
+    urls:
+      - name: customer
+        url: /customer/api-docs/
+      - name: passive
+        url: /passive/api-docs/
+      - name: active
+        url: /active/api-docs/
+      - name: deposit
+        url: /deposit/api-docs/
+      - name: payment
+        url: /payment/api-docs/
+      - name: charge-consumption
+        url: /charge-consumption/api-docs/
+      - name: withdrawal
+        url: /withdrawal/api-docs/
+      - name: balance
+        url: /balance/api-docs/
+      - name: movement
+        url: /movement/api-docs/
+      - name: debit-card
+        url: /debit-card/api-docs/
+      - name: virtual-coin
+        url: /virtual-coin/api-docs/
+      - name: bootcoin
+        url: /bootcoin/api-docs/
